@@ -17,6 +17,8 @@ from config import ARC_API_URL, ARC_API_KEY
 _DIRECT_URL_CACHE: dict[str, tuple[str, float]] = {}
 _DIRECT_INFO_CACHE: dict[str, dict] = {}
 _DIRECT_URL_CACHE_TTL = 8 * 60
+# Prevent duplicate yt-dlp extraction when multiple requests resolve the same URL.
+_DIRECT_RESOLVE_LOCKS: dict[str, asyncio.Lock] = {}
 
 
 async def _search_video_metadata(video_id: str) -> dict:
@@ -496,22 +498,43 @@ class YouTubeAPI:
         if "&" in link:
             link = link.split("&")[0]
 
-        # track() already resolved this URL. Reuse it instead of doing a
-        # second yt-dlp extraction.
+        # Reuse cached media URLs. If simultaneous requests ask for the same
+        # track, only one yt-dlp extraction runs; the others reuse its result.
         key = link
-        cached = _DIRECT_URL_CACHE.get(key)
         now = time.monotonic()
+        cached = _DIRECT_URL_CACHE.get(key)
         if cached and cached[1] > now:
             return cached[0]
         if cached:
             _DIRECT_URL_CACHE.pop(key, None)
 
-        info = await _yt_direct_info(link)
-        url = info.get("url") if info else None
-        if url:
-            _DIRECT_URL_CACHE[key] = (url, now + _DIRECT_URL_CACHE_TTL)
-            _DIRECT_INFO_CACHE[key] = info
-        return url
+        lock = _DIRECT_RESOLVE_LOCKS.get(key)
+        if lock is None:
+            lock = asyncio.Lock()
+            _DIRECT_RESOLVE_LOCKS[key] = lock
+
+        try:
+            async with lock:
+                # Another coroutine may have resolved the URL while we waited.
+                now = time.monotonic()
+                cached = _DIRECT_URL_CACHE.get(key)
+                if cached and cached[1] > now:
+                    return cached[0]
+
+                info = await _yt_direct_info(link)
+                url = info.get("url") if info else None
+                if url:
+                    _DIRECT_URL_CACHE[key] = (
+                        url,
+                        time.monotonic() + _DIRECT_URL_CACHE_TTL,
+                    )
+                    _DIRECT_INFO_CACHE[key] = info
+                return url
+        finally:
+            # Keep the dictionary small; don't remove a lock while another
+            # waiter may still be using it.
+            if not lock.locked():
+                _DIRECT_RESOLVE_LOCKS.pop(key, None)
 
     async def download(
         self,
