@@ -42,7 +42,7 @@ OCR_SPACE_API_KEY = getenv("OCR_SPACE_API_KEY", "helloworld")  # optional shared
 
 # Vars For API End Pont.
 ARC_API_URL = getenv("ARC_API_URL", "https://api.arcmusic.fun")
-ARC_API_KEY = getenv("ARC_API_KEY", "ARC708054d55c95189b757f86")
+ARC_API_KEY = getenv("ARC_API_KEY", "ARC4671e290cb3ff11230be62")
 
 # ── Hosting / deployment ───────────────────────────────────────────────────────
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
@@ -77,11 +77,11 @@ STRING5 = getenv("STRING_SESSION5")
 
 # ── Media assets ───────────────────────────────────────────────────────────────
 START_VIDS = [
-"https://graph.org/file/efde7476e17600a115a53-4cdd354b135eb821d2.jpg",
-"https://graph.org/file/02522fd2ceedc9501d3cb-2a5fae82d323ca8108.jpg",
-"https://graph.org/file/4b905c4bec37eb572c150-79979b8e6b73ae4eb7.jpg",
-"https://graph.org/file/561e78c3cea6f4ddba6c3-8a76966417c17d34db.jpg",
-"https://graph.org/file/2e580740f4979a0a9364d-2c819357fdc753fe2b.jpg",
+"https://files.catbox.moe/5dc4r1.jpg",
+"https://files.catbox.moe/8dx37s.jpg",
+"https://files.catbox.moe/9jfiap.jpg",
+"https://files.catbox.moe/csdelk.jpg",
+"https://files.catbox.moe/ma73xg.jpg",
 ]
 STICKERS = [
     "CAACAgUAAxkBAAFOuWNqUMj28Rrfpr3APoGQH5oC2qGq7wACwyAAAh7UeVa0AcYt3xU9tzwE",
