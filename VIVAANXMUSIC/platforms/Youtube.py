@@ -35,13 +35,13 @@ except ImportError:
     Playlist = None
 
 try:
-    from VIVAANXMUSIC.utils.database import is_on_off
+    from AviaxMusic.utils.database import is_on_off
 except ImportError:
     async def is_on_off(*args, **kwargs):
         return True
 
 try:
-    from VIVAANXMUSIC.utils.formatters import time_to_seconds
+    from AviaxMusic.utils.formatters import time_to_seconds
 except ImportError:
     def time_to_seconds(value):
         if not value:
@@ -120,7 +120,7 @@ class YouTubeAPI:
         """Reuse one async client so TCP/TLS connections can be kept alive."""
         if self._client is None or self._client.is_closed:
             self._client = httpx.AsyncClient(
-                timeout=httpx.Timeout(120.0, connect=5.0),
+                timeout=httpx.Timeout(90.0, connect=3.0),
                 follow_redirects=True,
                 limits=httpx.Limits(
                     max_connections=30,
@@ -460,7 +460,7 @@ class YouTubeAPI:
                 client = await self.get_client()
                 async with client.stream(
                     "GET", f"{API_URL}/download", params=params,
-                    timeout=httpx.Timeout(120.0, connect=5.0),
+                    timeout=httpx.Timeout(90.0, connect=3.0),
                 ) as response:
                     if response.status_code != 200:
                         logging.warning("Download API returned HTTP %s for %s", response.status_code, video_id)
@@ -508,9 +508,11 @@ class YouTubeAPI:
             "quiet": True,
             "no_warnings": True,
             "noplaylist": True,
-            "socket_timeout": 15,
-            "retries": 2,
-            "fragment_retries": 2,
+            "socket_timeout": 8,
+            "retries": 1,
+            "fragment_retries": 1,
+            "concurrent_fragment_downloads": 8,
+            "http_chunk_size": 10485760,
         }
 
         def _audio_dl():
@@ -610,4 +612,3 @@ class YouTubeAPI:
 
 
 YouTube = YouTubeAPI()
-                 
