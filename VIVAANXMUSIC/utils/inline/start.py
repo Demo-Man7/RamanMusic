@@ -34,9 +34,13 @@ def private_panel(_):
             )
         ],
         [
-            danger_button(
+            primary_button(
                 text=_["S_B_7"],
-                user_id=config.OWNER_ID,
+                url=(
+                    f"https://t.me/{config.OWNER_USERNAME.lstrip('@')}"
+                    if getattr(config, "OWNER_USERNAME", None)
+                    else f"tg://user?id={config.OWNER_ID}"
+                ),
             ),
             primary_button(
                 text=_["S_B_4"],
