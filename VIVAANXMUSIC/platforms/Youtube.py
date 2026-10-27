@@ -227,17 +227,12 @@ async def _yt_direct_info(link: str) -> dict | None:
             "quiet": True,
             "no_warnings": True,
             "skip_download": True,
-            "socket_timeout": 3,
-            "retries": 0,
-            "fragment_retries": 0,
-            "extractor_retries": 0,
+            "socket_timeout": 8,
+            "retries": 1,
+            "fragment_retries": 1,
+            "extractor_retries": 1,
             "skip_unavailable_fragments": True,
             "concurrent_fragment_downloads": 4,
-            "extractor_args": {
-                "youtube": {
-                    "player_client": ["web_safari", "mweb", "android"],
-                }
-            },
         }
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(link, download=False)
@@ -260,7 +255,7 @@ async def _yt_direct_info(link: str) -> dict | None:
                 "id": info.get("id") or "",
             }
     try:
-        return await asyncio.wait_for(asyncio.to_thread(_resolve), timeout=5.0)
+        return await asyncio.wait_for(asyncio.to_thread(_resolve), timeout=18.0)
     except Exception:
         return None
 
@@ -437,19 +432,67 @@ class YouTubeAPI:
 
         if "&" in original:
             original = original.split("&")[0]
-        results = VideosSearch(original, limit=1)
-        result_list = (await results.next()).get("result") or []
-        if not result_list:
-            raise ValueError("No YouTube search result found")
-        result = result_list[0]
+
+        # Search provider first (fast), then fall back to yt-dlp's own search
+        # extractor. This avoids failing every query when youtube-search-python
+        # is rate-limited or its upstream response format changes.
+        result = None
+        try:
+            search = VideosSearch(original, limit=1)
+            result_list = (await asyncio.wait_for(search.next(), timeout=8.0)).get("result") or []
+            if result_list:
+                result = result_list[0]
+        except Exception:
+            result = None
+
+        if result is None:
+            def _search_with_ytdlp():
+                opts = {
+                    "quiet": True,
+                    "no_warnings": True,
+                    "noplaylist": True,
+                    "skip_download": True,
+                    "socket_timeout": 8,
+                    "retries": 1,
+                    "extractor_retries": 1,
+                }
+                with yt_dlp.YoutubeDL(opts) as ydl:
+                    info = ydl.extract_info(f"ytsearch1:{original}", download=False)
+                    entries = (info or {}).get("entries") or []
+                    return next((entry for entry in entries if entry), None)
+            try:
+                result = await asyncio.wait_for(asyncio.to_thread(_search_with_ytdlp), timeout=18.0)
+            except Exception:
+                result = None
+
+        if not result:
+            raise ValueError("YouTube search providers failed; retry or check YouTube access")
+
+        vid = result.get("id") or ""
+        title = result.get("title") or original
+        link = result.get("webpage_url") or result.get("original_url") or (
+            f"https://www.youtube.com/watch?v={vid}" if vid else ""
+        )
+        thumb = result.get("thumbnail") or ""
+        if not thumb:
+            thumbs = result.get("thumbnails") or []
+            thumb = (thumbs[-1].get("url") if thumbs else "") or (
+                f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg" if vid else ""
+            )
+        duration = int(result.get("duration") or 0)
+        duration_min = f"{duration // 60}:{duration % 60:02d}" if duration else (
+            result.get("duration_string") or ""
+        )
+        if not vid or not link:
+            raise ValueError("YouTube search returned incomplete track details")
         track_details = {
-            "title": result["title"],
-            "link": result["link"],
-            "vidid": result["id"],
-            "duration_min": result.get("duration") or "",
-            "thumb": result["thumbnails"][0]["url"].split("?")[0],
+            "title": title,
+            "link": link,
+            "vidid": vid,
+            "duration_min": duration_min,
+            "thumb": thumb.split("?")[0],
         }
-        return track_details, result["id"]
+        return track_details, vid
  
     async def formats(self, link: str, videoid: Union[bool, str] = None):
         if videoid:
