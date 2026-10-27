@@ -28,12 +28,12 @@ except ImportError:
     VideosSearch = None; Playlist = None
 
 try:
-    from AviaxMusic.utils.database import is_on_off
+    from VIVAANXMUSIC.utils.database import is_on_off
 except ImportError:
     async def is_on_off(*a, **k): return True
 
 try:
-    from AviaxMusic.utils.formatters import time_to_seconds
+    from VIVAANXMUSIC.utils.formatters import time_to_seconds
 except ImportError:
     def time_to_seconds(s):
         if not s: return 0
