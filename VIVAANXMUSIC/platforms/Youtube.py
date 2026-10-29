@@ -11,7 +11,7 @@ import yt_dlp
 import requests
 from pyrogram.enums import MessageEntityType
 from pyrogram.types import Message
-from py_yt import Playlist
+ from youtubesearchpython.future import VideosSearch
 
 
 # Single API downloader. Configure these in Heroku Config Vars if the provider
@@ -22,7 +22,7 @@ YOUTUBE_API_URL = os.environ.get(
 ).rstrip("/")
 YOUTUBE_API_KEY = os.environ.get(
     "YOUTUBE_API_KEY",
-    os.environ.get("SHRUTI_API_KEY", "ShrutiBotsgbxTAhugEwUZWzgaosDX"),
+    os.environ.get("SHRUTI_API_KEY", "ShrutiBots3INQP6TuWWkKEEhJep5P"),
 )
 
 DOWNLOAD_DIR = "downloads"
