@@ -87,15 +87,15 @@ STICKERS = [
     "CAACAgUAAxkBAAFOuWNqUMj28Rrfpr3APoGQH5oC2qGq7wACwyAAAh7UeVa0AcYt3xU9tzwE",
     "CAACAgUAAxkBAAFOzY5qUf7pqrHwL11t17WP478cstKPAQACOhsAAm8FeVa4Vkbih4qtXzwE",
 ]
-HELP_IMG_URL = "https://graph.org/file/6c24f444757f8e277e60f-fa9183e17f3c738f60.jpg"
-PING_VID_URL = "https://files.catbox.moe/qyoe2w.jpg"
-PLAYLIST_IMG_URL = "https://files.catbox.moe/9m0pys.jpg"
-STATS_VID_URL = "https://files.catbox.moe/gq4hkk.jpg"
-TELEGRAM_AUDIO_URL = "https://files.catbox.moe/p82vwn.jpg"
-TELEGRAM_VIDEO_URL = "https://files.catbox.moe/mmdz7d.jpg"
-STREAM_IMG_URL = "https://files.catbox.moe/3fl186.jpg"
-SOUNCLOUD_IMG_URL = "https://files.catbox.moe/drua0p.jpg"
-YOUTUBE_IMG_URL = "https://files.catbox.moe/0yxqt1.jpg"
+HELP_IMG_URL = "https://graph.org/file/04bd59e594e57ddbe4bdf-d6b9f8986a9c47ea0f.jpg"
+PING_VID_URL = "https://graph.org/file/6113efcbbf9bfdff42989-d08059a184b881ce29.jpg"
+PLAYLIST_IMG_URL = "https://graph.org/file/e4f3f2ca893b5f803813d-85226e9dbf2c1ba47c.jpg"
+STATS_VID_URL = "https://graph.org/file/bd312919bc588df051f1f-33745f4d122a8880f1.jpg"
+TELEGRAM_AUDIO_URL = "https://graph.org/file/04bd59e594e57ddbe4bdf-d6b9f8986a9c47ea0f.jpg"
+TELEGRAM_VIDEO_URL = "https://graph.org/file/6113efcbbf9bfdff42989-d08059a184b881ce29.jpg"
+STREAM_IMG_URL = "https://graph.org/file/e4f3f2ca893b5f803813d-85226e9dbf2c1ba47c.jpg"
+SOUNCLOUD_IMG_URL = "https://graph.org/file/bd312919bc588df051f1f-33745f4d122a8880f1.jpg"
+YOUTUBE_IMG_URL = "https://graph.org/file/e4f3f2ca893b5f803813d-85226e9dbf2c1ba47c.jpg"
 SPOTIFY_ARTIST_IMG_URL = SPOTIFY_ALBUM_IMG_URL = SPOTIFY_PLAYLIST_IMG_URL = YOUTUBE_IMG_URL
 # ── Helpers ────────────────────────────────────────────────────────────────────
 def time_to_seconds(time: str) -> int:
