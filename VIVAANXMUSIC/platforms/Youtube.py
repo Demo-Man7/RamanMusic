@@ -151,66 +151,98 @@ async def _save_from_cdn(cdn: str, file_path: str) -> bool:
     return True
  
  
-async def download_song(link: str) -> str:
-    video_id = link.split("v=")[-1].split("&")[0] if "v=" in link else link
+async def _shruti_download(video_id: str, file_path: str, is_video: bool) -> bool:
+    """Download media directly from Shruti API after ARC has failed."""
+    api_url = os.getenv("SHRUTI_API_URL", "https://api.shrutibots.in").rstrip("/")
+    api_key = os.getenv("SHRUTI_API_KEY", "").strip()
+    if not api_key:
+        return False
+
+    params = {
+        "url": video_id,
+        "type": "video" if is_video else "audio",
+        "api_key": api_key,
+    }
+    timeout = aiohttp.ClientTimeout(total=600 if is_video else 300, connect=15)
+    temp_path = f"{file_path}.part"
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"{api_url}/download", params=params, timeout=timeout) as resp:
+                if resp.status != 200:
+                    return False
+                content_type = (resp.headers.get("Content-Type") or "").lower()
+                if "json" in content_type or "text/" in content_type:
+                    return False
+                size = 0
+                with open(temp_path, "wb") as output:
+                    async for chunk in resp.content.iter_chunked(131072):
+                        if chunk:
+                            output.write(chunk)
+                            size += len(chunk)
+                if size <= 0:
+                    return False
+        os.replace(temp_path, file_path)
+        return True
+    except Exception:
+        return False
+    finally:
+        if os.path.exists(temp_path):
+            try:
+                os.remove(temp_path)
+            except OSError:
+                pass
+
+
+async def _download_with_api_fallback(link: str, is_video: bool) -> str | None:
+    """ARC is primary; Shruti is called automatically if ARC fails."""
+    video_id = _youtube_video_id(link) or str(link or "").strip()
     if not video_id or len(video_id) < 3:
         return None
- 
+
     os.makedirs("downloads", exist_ok=True)
-    file_path = os.path.join("downloads", f"{video_id}.mp3")
+    extension = "mp4" if is_video else "mp3"
+    file_path = os.path.join("downloads", f"{video_id}.{extension}")
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         return file_path
- 
+
+    # Primary: ARC API.
     try:
-        cdn = await _arc_get_cdn(video_id, is_video=False)
-        if not cdn:
-            return None
- 
-        if not await _save_from_cdn(cdn, file_path):
-            return None
- 
-        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-            return file_path
-        return None
+        cdn = await _arc_get_cdn(video_id, is_video=is_video)
+        if cdn:
+            saved = await _save_from_cdn(cdn, file_path)
+            if saved and os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+                return file_path
     except Exception:
-        if os.path.exists(file_path):
-            try:
-                os.remove(file_path)
-            except Exception:
-                pass
-        return None
- 
- 
-async def download_video(link: str) -> str:
-    video_id = link.split("v=")[-1].split("&")[0] if "v=" in link else link
-    if not video_id or len(video_id) < 3:
-        return None
- 
-    os.makedirs("downloads", exist_ok=True)
-    file_path = os.path.join("downloads", f"{video_id}.mp4")
+        pass
+
+    # Delete incomplete output before switching providers.
+    if os.path.exists(file_path):
+        try:
+            os.remove(file_path)
+        except OSError:
+            pass
+
+    # Backup: Shruti API, using the exact same video ID.
+    await _shruti_download(video_id, file_path, is_video)
     if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
         return file_path
- 
-    try:
-        cdn = await _arc_get_cdn(video_id, is_video=True)
-        if not cdn:
-            return None
- 
-        if not await _save_from_cdn(cdn, file_path):
-            return None
- 
-        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-            return file_path
-        return None
-    except Exception:
-        if os.path.exists(file_path):
-            try:
-                os.remove(file_path)
-            except Exception:
-                pass
-        return None
- 
- 
+
+    if os.path.exists(file_path):
+        try:
+            os.remove(file_path)
+        except OSError:
+            pass
+    return None
+
+
+async def download_song(link: str) -> str | None:
+    return await _download_with_api_fallback(link, is_video=False)
+
+
+async def download_video(link: str) -> str | None:
+    return await _download_with_api_fallback(link, is_video=True)
+
+
 async def _yt_direct_info(link: str) -> dict | None:
     """Resolve title, duration and a playable audio URL in one extraction.
 
