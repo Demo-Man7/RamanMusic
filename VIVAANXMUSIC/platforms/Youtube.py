@@ -1,5 +1,7 @@
 import asyncio
 import os
+
+SHRUTI_API_URL = os.getenv("SHRUTI_API_URL", "https://api.shrutibots.in")
 import re
 import time
 from typing import Union
@@ -38,28 +40,6 @@ async def _search_video_metadata(video_id: str) -> dict:
             "duration": int(time_to_seconds(item.get("duration"))) if item.get("duration") else 0,
             "thumbnail": ((item.get("thumbnails") or [{}])[0].get("url") or "").split("?")[0],
             "id": item.get("id") or video_id,
-        }
-    except Exception:
-        return {}
-
-
-async def _search_query_metadata(query: str) -> dict:
-    """Return the first search result safely; empty/error results never leak."""
-    try:
-        response = await asyncio.wait_for(
-            VideosSearch(str(query).strip(), limit=1).next(), timeout=8.0
-        )
-        results = (response or {}).get("result") or []
-        if not results:
-            return {}
-        item = results[0]
-        thumbs = item.get("thumbnails") or []
-        return {
-            "title": item.get("title") or "",
-            "duration": item.get("duration") or "",
-            "thumbnail": (thumbs[0].get("url") or "").split("?")[0] if thumbs else "",
-            "id": item.get("id") or "",
-            "link": item.get("link") or "",
         }
     except Exception:
         return {}
@@ -352,52 +332,46 @@ class YouTubeAPI:
         return None
  
     async def details(self, link: str, videoid: Union[bool, str] = None):
-        original = str(link or "").strip()
         if videoid:
-            original = self.base + str(link).strip()
-        direct_id = _youtube_video_id(original)
-        if direct_id:
-            canonical = f"https://www.youtube.com/watch?v={direct_id}"
-            info = await _yt_direct_info(canonical)
-            if not info:
-                info = await _search_video_metadata(direct_id)
-            title = (info or {}).get("title") or await _oembed_title(direct_id) or "YouTube Track"
-            seconds = int((info or {}).get("duration") or 0)
-            duration_min = f"{seconds // 60}:{seconds % 60:02d}" if seconds > 0 else "00:00"
-            thumbnail = (info or {}).get("thumbnail") or f"https://i.ytimg.com/vi/{direct_id}/hqdefault.jpg"
-            return title, duration_min, seconds, thumbnail.split("?")[0], direct_id
-
-        if "&" in original:
-            original = original.split("&")[0]
-        info = await _search_query_metadata(original)
-        if not info:
-            raise ValueError(f"No YouTube search result found for: {original}")
-        duration_min = info.get("duration") or ""
-        try:
+            link = self.base + link
+        if "&" in link:
+            link = link.split("&")[0]
+        results = VideosSearch(link, limit=1)
+        for result in (await results.next())["result"]:
+            title = result["title"]
+            duration_min = result["duration"]
+            thumbnail = result["thumbnails"][0]["url"].split("?")[0]
+            vidid = result["id"]
             duration_sec = int(time_to_seconds(duration_min)) if duration_min else 0
-        except (TypeError, ValueError):
-            duration_sec = 0
-        return (info.get("title") or "YouTube Track", duration_min or "00:00", duration_sec,
-                info.get("thumbnail") or "", info.get("id") or "")
-
+        return title, duration_min, duration_sec, thumbnail, vidid
+ 
     async def title(self, link: str, videoid: Union[bool, str] = None):
-        try:
-            return (await self.details(link, videoid))[0]
-        except Exception:
-            return None
-
+        if videoid:
+            link = self.base + link
+        if "&" in link:
+            link = link.split("&")[0]
+        results = VideosSearch(link, limit=1)
+        for result in (await results.next())["result"]:
+            return result["title"]
+ 
     async def duration(self, link: str, videoid: Union[bool, str] = None):
-        try:
-            return (await self.details(link, videoid))[1]
-        except Exception:
-            return None
-
+        if videoid:
+            link = self.base + link
+        if "&" in link:
+            link = link.split("&")[0]
+        results = VideosSearch(link, limit=1)
+        for result in (await results.next())["result"]:
+            return result["duration"]
+ 
     async def thumbnail(self, link: str, videoid: Union[bool, str] = None):
-        try:
-            return (await self.details(link, videoid))[3]
-        except Exception:
-            return None
-
+        if videoid:
+            link = self.base + link
+        if "&" in link:
+            link = link.split("&")[0]
+        results = VideosSearch(link, limit=1)
+        for result in (await results.next())["result"]:
+            return result["thumbnails"][0]["url"].split("?")[0]
+ 
     async def video(self, link: str, videoid: Union[bool, str] = None):
         if videoid:
             link = self.base + link
@@ -495,15 +469,17 @@ class YouTubeAPI:
 
         if "&" in original:
             original = original.split("&")[0]
-        result = await _search_query_metadata(original)
-        if not result or not result.get("id"):
-            raise ValueError(f"No YouTube search result found for: {original}")
+        results = VideosSearch(original, limit=1)
+        result_list = (await results.next()).get("result") or []
+        if not result_list:
+            raise ValueError("No YouTube search result found")
+        result = result_list[0]
         track_details = {
-            "title": result.get("title") or "YouTube Track",
-            "link": result.get("link") or f"https://www.youtube.com/watch?v={result['id']}",
+            "title": result["title"],
+            "link": result["link"],
             "vidid": result["id"],
             "duration_min": result.get("duration") or "",
-            "thumb": result.get("thumbnail") or f"https://i.ytimg.com/vi/{result['id']}/hqdefault.jpg",
+            "thumb": result["thumbnails"][0]["url"].split("?")[0],
         }
         return track_details, result["id"]
  
@@ -539,17 +515,13 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        try:
-            a = VideosSearch(link, limit=10)
-            result = (await asyncio.wait_for(a.next(), timeout=8.0) or {}).get("result") or []
-            if query_type < 0 or query_type >= len(result):
-                return None, None, None, None
-            item = result[query_type]
-            thumbs = item.get("thumbnails") or []
-            thumbnail = (thumbs[0].get("url") or "").split("?")[0] if thumbs else ""
-            return item.get("title"), item.get("duration"), thumbnail, item.get("id")
-        except Exception:
-            return None, None, None, None
+        a = VideosSearch(link, limit=10)
+        result = (await a.next()).get("result")
+        title = result[query_type]["title"]
+        duration_min = result[query_type]["duration"]
+        vidid = result[query_type]["id"]
+        thumbnail = result[query_type]["thumbnails"][0]["url"].split("?")[0]
+        return title, duration_min, thumbnail, vidid
  
     async def stream_url(self, link: str, videoid: Union[bool, str] = None):
         if videoid:
