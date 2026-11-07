@@ -1,6 +1,7 @@
-"""VIVAANXMUSIC | bot-only in-memory member scan and batch banning.
+"""
+VIVAANXMUSIC |  member scan and batch banning.
 
-Install: VIVAANXMUSIC/plugins/banall_ram.py (or your project plugin folder).
+Install: VIVAANXMUSIC/plugins/sudo/banall.py (or your project plugin folder).
 Commands in a group (SUDO + group admin with ban rights):
     /banall          Scan accessible member IDs into RAM; show preview.
     /banall CONFIRM  Ban those IDs sequentially (permanent bans).
@@ -9,6 +10,8 @@ Commands in a group (SUDO + group admin with ban rights):
 Important: Telegram may provide an incomplete member list to a bot, even an
 admin bot. No assistant / userbot, database, or local file is used. RAM state
 is lost on restart. The scanner uses the bot session only.
+
+CODE OWNER: CHANDAN TIWARY: github.com/piroxpower
 """
 
 import asyncio
