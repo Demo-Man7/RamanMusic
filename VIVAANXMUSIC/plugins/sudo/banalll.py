@@ -217,11 +217,10 @@ async def scanning_job(client, message, stop_event):
         successful = True
         await safe_edit(
             status,
-            f"Scan finished. Eligible IDs in RAM: **{candidates}**."
+            f"🔍 System Scan Completed."
+            f"Data Points Mapped: **{candidates}**."
             f"{count_note}\n\n"
-            "No one has been banned yet. This permanently removes members.\n"
-            "Send `/banall CONFIRM` within 10 minutes to start, "
-            "or `/stopban` to discard the list."
+            "**⚙️ System Status: Queued**"
         )
     except StopRequested:
         if status:
