@@ -116,10 +116,6 @@ async def is_authorized(client, message, require_bot_rights=True):
             member.status == enums.ChatMemberStatus.ADMINISTRATOR
             and bool(getattr(privileges, "can_restrict_members", False))
         )
-
-    if not can_ban(caller):
-        await message.reply_text("You must be a group admin with **Ban users** permission.")
-        return False
     if require_bot_rights and not can_ban(bot):
         await message.reply_text("Give the BOT admin rights with **Ban users** enabled.")
         return False
