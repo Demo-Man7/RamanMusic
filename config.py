@@ -12,14 +12,14 @@ API_HASH = getenv("API_HASH", "26100c77cee02e5e34b2bbee58440f86")
 BOT_TOKEN = getenv("BOT_TOKEN")
 
 OWNER_ID = int(getenv("OWNER_ID", 1384525218))
-OWNER_USERNAME = getenv("OWNER_USERNAME", "@II_ROYALENTRY1128_II")
-BOT_USERNAME = getenv("BOT_USERNAME", "KavyaMusicBot")
+OWNER_USERNAME = getenv("OWNER_USERNAME", "@RAM_XD09")
+BOT_USERNAME = getenv("BOT_USERNAME", "SuzuMusicBot")
 BOT_NAME = getenv("BOT_NAME", "˹ʜɪηᴧ ꭙ мᴜsɪᴄ˼ ♪")
-ASSUSERNAME = getenv("ASSUSERNAME", "KavyaAssistant")
+ASSUSERNAME = getenv("ASSUSERNAME", "SuzuAssistant")
 
 # ── Database & logging ─────────────────────────────────────────────────────────
 MONGO_DB_URI = getenv("MONGO_DB_URI")
-LOGGER_ID = int(getenv("LOGGER_ID", -1002922616309))
+LOGGER_ID = int(getenv("LOGGER_ID", -1003939559976))
 
 # ── Limits (durations in min/sec; sizes in bytes) ──────────────────────────────
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 99999))
@@ -54,8 +54,8 @@ UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "main")
 GIT_TOKEN = getenv("GIT_TOKEN")  # needed if repo is private
 
 # ── Support links ──────────────────────────────────────────────────────────────
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/ll_ROYAL_ABOUT_ll")
-SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/hot_dpz_stor")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/+NWuw-XNh0EVlNGI1")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/+5v9dp0IR5KYyZTc1")
 
 # ── Assistant auto-leave ───────────────────────────────────────────────────────
 AUTO_LEAVING_ASSISTANT = False
@@ -87,10 +87,10 @@ STICKERS = [
     "CAACAgUAAxkBAAFOuWNqUMj28Rrfpr3APoGQH5oC2qGq7wACwyAAAh7UeVa0AcYt3xU9tzwE",
     "CAACAgUAAxkBAAFOzY5qUf7pqrHwL11t17WP478cstKPAQACOhsAAm8FeVa4Vkbih4qtXzwE",
 ]
-HELP_IMG_URL = "https://graph.org/file/04bd59e594e57ddbe4bdf-d6b9f8986a9c47ea0f.jpg"
-PING_VID_URL = "https://graph.org/file/6113efcbbf9bfdff42989-d08059a184b881ce29.jpg"
-PLAYLIST_IMG_URL = "https://graph.org/file/e4f3f2ca893b5f803813d-85226e9dbf2c1ba47c.jpg"
-STATS_VID_URL = "https://graph.org/file/bd312919bc588df051f1f-33745f4d122a8880f1.jpg"
+HELP_IMG_URL = "https://graph.org/file/78b55a06dcf988a7450c6-85c42d0143fc5cfe23.jpg"
+PING_VID_URL = "https://graph.org/file/78b55a06dcf988a7450c6-85c42d0143fc5cfe23.jpg"
+PLAYLIST_IMG_URL = "https://graph.org/file/78b55a06dcf988a7450c6-85c42d0143fc5cfe23.jpg"
+STATS_VID_URL = "https://graph.org/file/78b55a06dcf988a7450c6-85c42d0143fc5cfe23.jpg"
 TELEGRAM_AUDIO_URL = "https://graph.org/file/04bd59e594e57ddbe4bdf-d6b9f8986a9c47ea0f.jpg"
 TELEGRAM_VIDEO_URL = "https://graph.org/file/6113efcbbf9bfdff42989-d08059a184b881ce29.jpg"
 STREAM_IMG_URL = "https://graph.org/file/e4f3f2ca893b5f803813d-85226e9dbf2c1ba47c.jpg"
