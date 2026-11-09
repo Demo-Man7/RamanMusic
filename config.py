@@ -83,6 +83,13 @@ START_VIDS = [
 "https://files.catbox.moe/csdelk.jpg",
 "https://files.catbox.moe/ma73xg.jpg",
 ]
+
+# welcome Media assets 
+WEL_VIDS = [
+"https://graph.org/file/aee93acfc99ff17e094a7-3e96c75f9bcb0dacde.jpg",
+"https://graph.org/file/cb0758c395ca82dfc3a6d-d6a5f3d5ac2f0484dd.jpg",
+]
+
 STICKERS = [
     "CAACAgUAAxkBAAFOuWNqUMj28Rrfpr3APoGQH5oC2qGq7wACwyAAAh7UeVa0AcYt3xU9tzwE",
     "CAACAgUAAxkBAAFOzY5qUf7pqrHwL11t17WP478cstKPAQACOhsAAm8FeVa4Vkbih4qtXzwE",
