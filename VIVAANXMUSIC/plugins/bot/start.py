@@ -27,7 +27,7 @@ from VIVAANXMUSIC.utils.decorators.language import LanguageStart
 from VIVAANXMUSIC.utils.formatters import get_readable_time
 from VIVAANXMUSIC.utils.inline.help import first_page
 from VIVAANXMUSIC.utils.inline.start import private_panel, start_panel
-from config import BANNED_USERS, AYUV, HELP_IMG_URL, START_VIDS, STICKERS
+from config import BANNED_USERS, AYUV, HELP_IMG_URL, START_VIDS, WEL_VIDS, STICKERS
 from strings import get_string
 from VIVAANXMUSIC.utils.rich_buttons import rich_call
 
@@ -311,7 +311,7 @@ async def welcome(client, message: Message):
                 # BOT ADD HONE PAR IMAGE
                 await _reply_photo_or_text(
                     message,
-                    random.choice(START_VIDS),
+                    random.choice(WEL_VIDS),
                     _["start_3"].format(
                         message.from_user.mention,
                         app.mention,
