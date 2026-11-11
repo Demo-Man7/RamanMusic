@@ -13,11 +13,7 @@ ASSISTANT_START_TIMEOUT = 60
 ASSISTANT_STEP_TIMEOUT = 15
 
 GROUPS_TO_JOIN = [
-    "about_Maahi_XD",
-    "ll_DPZ_WORLDS_lll",
-    "about_Maahi_XD",
-    "ll_DPZ_WORLDS_lll",
-    "about_Maahi_XD",
+    "myanmar_music_bot2027",
 ]
 
 
@@ -146,7 +142,7 @@ class Userbot:
             return False
 
     async def start(self):
-        LOGGER(__name__).info("Starting Vivaan's Assistants...")
+        LOGGER(__name__).info("Starting  Assistants...")
         await self.start_assistant(self.one, 1)
         await self.start_assistant(self.two, 2)
         await self.start_assistant(self.three, 3)
