@@ -11,15 +11,15 @@ API_ID = int(getenv("API_ID", 27798659))
 API_HASH = getenv("API_HASH", "26100c77cee02e5e34b2bbee58440f86")
 BOT_TOKEN = getenv("BOT_TOKEN")
 
-OWNER_ID = int(getenv("OWNER_ID", 7140984124))
-OWNER_USERNAME = getenv("OWNER_USERNAME", "@BABY_LOVE_YOU_TOO")
-BOT_USERNAME = getenv("BOT_USERNAME", "SuzuMusicBot")
-BOT_NAME = getenv("BOT_NAME", "˹ʜɪηᴧ ꭙ мᴜsɪᴄ˼ ♪")
-ASSUSERNAME = getenv("ASSUSERNAME", "SuzuAssistant")
+OWNER_ID = int(getenv("OWNER_ID"))
+OWNER_LINK = getenv("OWNER_LINK")
+BOT_USERNAME = getenv("BOT_USERNAME")
+BOT_NAME = getenv("BOT_NAME")
+ASSUSERNAME = getenv("ASSUSERNAME")
 
 # ── Database & logging ─────────────────────────────────────────────────────────
 MONGO_DB_URI = getenv("MONGO_DB_URI")
-LOGGER_ID = int(getenv("LOGGER_ID", -1003939559976))
+LOGGER_ID = int(getenv("LOGGER_ID"))
 
 # ── Limits (durations in min/sec; sizes in bytes) ──────────────────────────────
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 99999))
@@ -49,7 +49,7 @@ HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
 HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
 # ── Git / updates ──────────────────────────────────────────────────────────────
-UPSTREAM_REPO = getenv("UPSTREAM_REPO", "https://github.com/notreallysrk/RamanMusic")
+UPSTREAM_REPO = getenv("UPSTREAM_REPO", "https://github.com/Demo-Man7/RamanMusic")
 UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "main")
 GIT_TOKEN = getenv("GIT_TOKEN")  # needed if repo is private
 
