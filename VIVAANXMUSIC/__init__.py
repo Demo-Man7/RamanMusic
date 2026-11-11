@@ -1,6 +1,6 @@
 from VIVAANXMUSIC.core.bot import JARVIS
 from VIVAANXMUSIC.core.dir import dirr
-from VIVAANXMUSIC.core.git import git
+#from VIVAANXMUSIC.core.git import git
 from VIVAANXMUSIC.core.runtime_patches import apply_runtime_patches
 from VIVAANXMUSIC.core.userbot import Userbot
 from VIVAANXMUSIC.misc import dbb, heroku
@@ -9,7 +9,7 @@ from VIVAANXMUSIC.security import drop_sensitive_env_vars
 from .logging import LOGGER
 
 dirr()
-git()
+#git()
 dbb()
 heroku()
 apply_runtime_patches()
