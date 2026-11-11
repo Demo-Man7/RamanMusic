@@ -26,7 +26,7 @@ async def bot_stats(client: Client, message: Message):
         uptime = format_uptime(stats["uptime_seconds"])
         
         stats_text = f"""
-🎵 **VIVAANXMUSIC Bot Statistics** 🎵
+🎵 **Bot Statistics** 🎵
 
 📊 **Performance Metrics:**
 ├─ Songs Played: `{stats['songs_played']}`
