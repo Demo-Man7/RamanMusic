@@ -36,11 +36,8 @@ def private_panel(_):
         [
             primary_button(
                 text=_["S_B_7"],
-                url=(
-                    f"https://t.me/{config.OWNER_USERNAME.lstrip('@')}"
-                    if getattr(config, "OWNER_USERNAME", None)
-                    else f"tg://user?id={config.OWNER_ID}"
-                ),
+                url=config.OWNER_LINK
+                
             ),
             primary_button(
                 text=_["S_B_4"],
