@@ -55,7 +55,7 @@ async def sudoers_list(client, message: Message):
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     await rich_call(message.reply_video, 
-        video="https://files.catbox.moe/nmtmde.mp4",
+        video="https://anubox.vercel.app/1794393448505.mp4",
         caption="**» ᴄʜᴇᴄᴋ sᴜᴅᴏ ʟɪsᴛ ʙʏ ɢɪᴠᴇɴ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ.**\n\n**» ɴᴏᴛᴇ:**  ᴏɴʟʏ sᴜᴅᴏ ᴜsᴇʀs ᴄᴀɴ ᴠɪᴇᴡ.",
         reply_markup=reply_markup
     )
