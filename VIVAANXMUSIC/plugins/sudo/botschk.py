@@ -8,11 +8,11 @@ from config import OWNER_ID
 userbot = Userbot()
 
 BOT_LIST = [
-    "Bloody_musicbot",
-    "Vivaanmusicclubbot",
-    "you_tubemusic2bot",
-    "Vivan_music_bot",
-    "SkyBeatzBot"
+    "MYANMAR_FRIEND_BOT",
+    "BabeBooBooBot",
+    "Myanmar_Ma_Lay_Bot",
+    "PANDAMUSIC9_BOT",
+    "MYANMAR_FM_BOT"
 ]
 
 @app.on_message(filters.command("botschk") & filters.group)
